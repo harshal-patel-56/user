@@ -2,3 +2,4 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://Harshal:Harshal123@users-1ctfw.mongodb.net/test?retryWrites=true&w=majority
+      database: user_test

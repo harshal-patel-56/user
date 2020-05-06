@@ -1,6 +1,8 @@
 package com.harshal.todo.user.controllers;
 
 import com.harshal.todo.user.domain.User;
+import com.harshal.todo.user.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -11,50 +13,32 @@ import java.util.Optional;
 @RequestMapping("/")
 public class UserController {
 
-    static ArrayList<User> users = new ArrayList<>();
-    static {
-        users.add(new User(1L, "jon_doe", "password1", "Jon", "Doe",
-                "jondoe@gmail.com"));
-        users.add(new User(2L, "doe_smith", "password2", "Doe", "Smith",
-                "doesmith@gmail.com"));
-    }
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/users")
     public List<User> getAllUsers() {
-        return UserController.users;
+        return userService.getAllUsers();
     }
 
     @GetMapping("/users/{username}")
     public User getUserById(@PathVariable String username) {
-        Optional<User> searchedUser = users.stream().filter( user -> username.equals(user.getUsername())).findFirst();
-        return searchedUser.orElse(null);
+        return userService.getUserByUsername(username);
     }
 
     @PostMapping("/")
     public String createUser(@RequestBody User user) {
-        users.add(user);
-        return "User Added";
+        return userService.createUser(user);
     }
 
     @DeleteMapping("/users/{username}")
     public String deleteUser(@PathVariable String username) {
-        Optional<User> deleteUser = users.stream().filter(user -> username.equals(user.getUsername())).findFirst();
-
-        deleteUser.ifPresent(user -> UserController.users.remove(user));
-
-        return deleteUser.isPresent() ? "User Deleted!!!" : "User Doesn't Exist!!!";
+        return userService.deleteUser(username);
     }
 
     @PutMapping("/users/{username}")
     public String updateUser(@RequestBody User updateUser) {
-        Optional<User> targetUser = users.stream().filter(user -> updateUser.getUsername().equals(user.getUsername())).findFirst();
-
-        if(targetUser.isPresent()){
-            UserController.users.remove(targetUser.get());
-            UserController.users.add(updateUser);
-        }
-
-        return targetUser.isPresent() ? "User Updated!!!" : "User Doesn't Exist!!!";
+        return userService.updateUser(updateUser);
     }
 
 }
