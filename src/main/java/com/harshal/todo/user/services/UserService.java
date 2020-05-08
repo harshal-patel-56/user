@@ -1,13 +1,13 @@
 package com.harshal.todo.user.services;
 
-import com.harshal.todo.user.controllers.UserController;
 import com.harshal.todo.user.domain.User;
 import com.harshal.todo.user.repository.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.jaxb.SpringDataJaxb;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +20,18 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return userRepo.findAll();
+    }
+
+    public List<User> getUsersPage(int pageNo) {
+
+        // check pageNo > 0 --> Invalid page Error
+        
+        Pageable pageable = PageRequest.of(pageNo - 1, 5);
+        Page<User> userPage = userRepo.findAll(pageable);
+
+        // check userPage.getContent != null --> Page Index out of Bound Error.
+
+        return userPage.getContent().isEmpty() ? null : userPage.getContent();
     }
 
     public User getUserByUsername(String username) {
