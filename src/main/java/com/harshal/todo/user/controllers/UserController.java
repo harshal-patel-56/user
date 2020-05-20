@@ -10,20 +10,15 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
-    }
-
-    @GetMapping("/users/page/{pageNo}")
-    public List<User> getUsersPage(@PathVariable int pageNo) {
-        return userService.getUsersPage(pageNo);
+    public List<User> getAllUsers(@RequestParam int pageNo, @RequestParam int userCount) {
+        return userService.getAllUsers(pageNo, userCount);
     }
 
     @GetMapping("/users/{username}")

@@ -18,20 +18,13 @@ public class UserService {
     @Autowired
     private UserRepo userRepo;
 
-    public List<User> getAllUsers() {
-        return userRepo.findAll();
-    }
+    public List<User> getAllUsers(int pageNo, int userCount) {
 
-    public List<User> getUsersPage(int pageNo) {
-
-        // check pageNo > 0 --> Invalid page Error
-        
-        Pageable pageable = PageRequest.of(pageNo - 1, 5);
+        Pageable pageable = PageRequest.of(pageNo - 1, userCount);
         Page<User> userPage = userRepo.findAll(pageable);
 
-        // check userPage.getContent != null --> Page Index out of Bound Error.
-
         return userPage.getContent().isEmpty() ? null : userPage.getContent();
+
     }
 
     public User getUserByUsername(String username) {
